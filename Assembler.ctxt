@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.target=Assembler
+comment0.text=\r\n\ Assembler\ translates\ the\ instruction\ to\ its\ octal\ representation\ with\ the\r\n\ address\ of\ this\ instruction\r\n\ \r\n\ \r\n\ @Boxin\ Yang\r\n\ @Feb\ 1\r\n
+comment1.params=
+comment1.target=Assembler()
+comment2.params=
+comment2.target=void\ loadDict()
+comment3.params=fileName
+comment3.target=void\ readFile(java.lang.String)
+comment4.params=binary
+comment4.target=java.lang.String\ BinaryToOctal(java.lang.String)
+comment5.params=
+comment5.target=void\ parse()
+comment6.params=fileName
+comment6.target=void\ writeListingFile(java.lang.String)
+comment7.params=fileName
+comment7.target=void\ writeLoadFile(java.lang.String)
+comment8.params=
+comment8.target=void\ main()
+numComments=9
