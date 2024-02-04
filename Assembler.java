@@ -324,11 +324,16 @@ public class Assembler
         }
     }
     
-    public void main(){
+    public void run(){
         readFile("./test case.txt");
         loadDict();
         parse();
         writeListingFile("./ListingFile.txt");
         writeLoadFile("./LoadFile.txt");
+    }
+    
+    public static void main(String[] args){
+        Assembler myAssembler = new Assembler();
+        myAssembler.run();
     }
 }

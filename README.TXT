@@ -1,12 +1,5 @@
-------------------------------------------------------------------------
-这是这个工程的README文件，你可以在这里描述你的工程。告诉读者（某些对这个
-工程一无所知的人）所有他所需要知道的东西。你的说明通常至少应该包含以下几
-个部分：
-------------------------------------------------------------------------
-
-工程名：
-工程的目标：
-版本或者日期：
-如何启动这个工程：
-作者
-使用指南：
+This is the CSCI 6461 term project Team 9.
+Team members are:Udaykiran Kalyanapu, Abhiyan Sainju, Boxin Yang.
+Now it contains the part 0 assembler which translate the instructions to its octal form with its loading address.
+To run this program, simply execute the run.jar file.It will read from the testcase.txt file and output a listing file and a load file.
+This program requires java17 or later.
