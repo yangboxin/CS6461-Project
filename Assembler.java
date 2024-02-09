@@ -259,6 +259,7 @@ public class Assembler
         for(String instruction:instructions){
             String[] tmpArr=instruction.split("\\s+");
             if(tmpArr[0].equals("LOC")){//set the address if specified
+                parsedInstru.add("             ");
                 address = Integer.parseInt(tmpArr[1]);
             }
             else if(tmpArr[0].equals("Data")){//if Data, straight to the parsed results
@@ -324,12 +325,35 @@ public class Assembler
         }
     }
     
+    public void cleanup(String fileName) {
+        // Try-with-resources to ensure that all resources will be closed
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName));
+             PrintWriter writer = new PrintWriter(new FileWriter("./LoadFile.txt"))) {
+            
+            String line;
+            
+            // Read each line from the file
+            while ((line = reader.readLine()) != null) {
+                // Check if the line is not blank
+                if (!line.trim().isEmpty()) {
+                    // Write the non-blank line to the output file
+                    writer.println(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
     public void run(){
         readFile("./test case.txt");
         loadDict();
         parse();
         writeListingFile("./ListingFile.txt");
-        writeLoadFile("./LoadFile.txt");
+        writeLoadFile("./LoadFile1.txt");
+        parsedInstru.clear();
+        cleanup("./LoadFile1.txt");
     }
     
     public static void main(String[] args){
