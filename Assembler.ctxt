@@ -1,6 +1,5 @@
 #BlueJ class context
 comment0.target=Assembler
-comment0.text=\n\ Assembler\ translates\ the\ instruction\ to\ its\ octal\ representation\ with\ the\n\ address\ of\ this\ instruction\n\ \n\ \n\ @Boxin\ Yang\n\ @Feb\ 1\n
 comment1.params=
 comment1.target=Assembler()
 comment10.params=instruction

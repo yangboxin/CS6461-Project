@@ -2,14 +2,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-/**
- * Assembler translates the instruction to its octal representation with the
- * address of this instruction
- * 
- * 
- * @Boxin Yang
- * @Feb 1
- */
+
 public class Assembler
 {
     private int address;    
@@ -155,9 +148,17 @@ public class Assembler
     
     public void formatAndConvertInstruction(String opcode, String r, String x, String indirectAdd, String Add){
         String I=indirectAdd;
+
+        //get the binary representation of the opcode(eg:LDX) stored in HashMap named Ins2Bi using the instruction name as key value 
         String opcodeBi=Ins2Bi.get(opcode);
+
+        //Convert the 'Add' parameter to binary format, ensuring it's represented as a 5-bit binary string
         String add=String.format("%5s",Integer.toBinaryString(Integer.parseInt(Add))).replace(' ', '0');
+
+        //Convert the 'Add' parameter to binary format, ensuring it's represented as a 5-bit binary string
         String res=BinaryToOctal(opcodeBi+r+x+I+add);
+
+        //Add the formatted instruction (combining address and instruction) to the 'parsedInstru' ArrayList
         parsedInstru.add(String.format("%06o",address)+" "+res);
     }
     
@@ -169,22 +170,24 @@ public class Assembler
         }
         else{
             //Trap
-            String code=Integer.toString(Integer.parseInt(instruction[1],2));
-            code = String.format("%4s", code).replace(' ', '0');
+            String code=String.format("%4s",Integer.toBinaryString(Integer.parseInt(instruction[1]))).replace(' ','0');
             String res=BinaryToOctal("100101000000"+code);
             parsedInstru.add(String.format("%06o",address)+" "+res);
         }
     }
     
     public void handleLoadStoreInstruction(String[] instruction){
+        // Get the opcode from the instruction array passed as parameter
         String opcode=instruction[0];
         String indirectAdd="0";
-        String[] sep=instruction[1].split(",");
+        String[] sep=instruction[1].split(","); //seperate the instruction parameters seperated by "," into a array of type String
+
+        // Check if the opcode is either "LDX" or "STX"
         if(opcode.equals("LDX")||opcode.equals("STX")){
-            formatAndConvertInstruction(opcode,"00",rxLookup.get(sep[0]),sep.length>=3?sep[2]:"0",sep[1]);
+            formatAndConvertInstruction(opcode,"00",rxLookup.get(sep[0]),sep.length>=3?sep[2]:"0",sep[1]); // if instruction LDX or STX, register R value is 00
         }
         else{
-            formatAndConvertInstruction(opcode,rxLookup.get(sep[0]),rxLookup.get(sep[1]),sep.length>=4?sep[3]:"0",sep[2]);
+            formatAndConvertInstruction(opcode,rxLookup.get(sep[0]),rxLookup.get(sep[1]),sep.length>=4?sep[3]:"0",sep[2]);// If the opcode is not "LDX" or "STX", set register R value to the value corresponding to sep[0]
         }
     }
     
@@ -192,15 +195,23 @@ public class Assembler
         String opcode=instruction[0];
         String indirectAdd="0";
         String[] sep=instruction[1].split(",");
+
+        // If the opcode is "JZ", "JNE", "JMA", or "JSR", set register R value to "00"
         if(opcode.equals("JZ")||opcode.equals("JNE")||opcode.equals("JMA")||opcode.equals("JSR")){
             formatAndConvertInstruction(opcode,"00",rxLookup.get(sep[0]),sep.length>=3?sep[2]:"0",sep[1]);
         }
+
+        // If the opcode is "SETCCE", set register R value to the value corresponding to sep[0] and pass the parameters to formatAndConvertInstruction
         else if(opcode.equals("SETCCE")){
             formatAndConvertInstruction("SETCCE", rxLookup.get(sep[0]),"00","0","00000");
         }
+
+        // If the opcode is "RFS", set register R and X value to "00" and pass the parameters to formatAndConvertInstruction
         else if(opcode.equals("RFS")){
             formatAndConvertInstruction("RFS","00","00","0",sep[0]);
         }
+
+        // For other opcodes of TransferInstruction category, set register R and X values to the values corresponding to sep[0] and sep[1] and pass the parameters to formatAndConvertInstruction
         else{
             formatAndConvertInstruction(opcode,rxLookup.get(sep[0]),rxLookup.get(sep[1]),sep.length>=4?sep[3]:"0",sep[2]);
         }
@@ -210,9 +221,13 @@ public class Assembler
         String opcode=instruction[0];
         String indirectAdd="0";
         String[] sep=instruction[1].split(",");
+        
+        // If the opcode is "AMR" or "SMR", set register R and X values to the values corresponding to sep[0] and sep[1] and pass the parameters to formatAndConvertInstruction
         if(opcode.equals("AMR")||opcode.equals("SMR")){
             formatAndConvertInstruction(opcode,rxLookup.get(sep[0]),rxLookup.get(sep[1]),sep.length>=4?sep[3]:"0",sep[2]);
         }
+
+        // For other opcodes, set register R value to the value corresponding to sep[0] and pass the parameters to formatAndConvertInstruction
         else{
             formatAndConvertInstruction(opcode, rxLookup.get(sep[0]),"00","0",sep[1]);
         }
@@ -222,14 +237,19 @@ public class Assembler
         String opcode=instruction[0];
         String indirectAdd="0";
         String[] sep=instruction[1].split(",");
+
+        // If the opcode is "NOT", set register R value to the value corresponding to sep[0] and pass the parameters to formatAndConvertInstruction
         if(opcode.equals("NOT")){
             formatAndConvertInstruction(opcode,rxLookup.get(sep[0]),"00","0","00000");
         }
+
+        // For other opcodes, set register R and X values to the values corresponding to sep[0] and sep[1] and pass the parameters to formatAndConvertInstruction
         else{
             formatAndConvertInstruction(opcode, rxLookup.get(sep[0]),rxLookup.get(sep[1]),"0","00000");
         }
     }
     
+    // Method for handling shift and rotate instructions
     public void handleShiftnRotateInstruction(String[] instruction){
         String opcode=instruction[0];
         String indirectAdd="0";
@@ -237,6 +257,7 @@ public class Assembler
         formatAndConvertInstruction(opcode, rxLookup.get(sep[0]),sep[3]+sep[2],"0",sep[1]);
     }
     
+    // Method for handling input/output instructions
     public void handleIOInstruction(String[] instruction){
         String opcode=instruction[0];
         String indirectAdd="0";
@@ -244,6 +265,7 @@ public class Assembler
         formatAndConvertInstruction(opcode, rxLookup.get(sep[0]),"00","0",sep[1]);
     }
     
+    // Method for handling floating-point vector instructions
     public void handleFloatPVecInstruction(String[] instruction){
         String opcode=instruction[0];
         String indirectAdd="0";
@@ -251,49 +273,52 @@ public class Assembler
         formatAndConvertInstruction(opcode, rxLookup.get(sep[0]),rxLookup.get(sep[1]),sep.length>=4?sep[3]:"0",sep[2]);
     }
     
+    // Method to parse instructions
     public void parse(){
         StringBuffer sBuffer = new StringBuffer("LOC");
         if(!instructions.get(0).contentEquals(sBuffer)){
             address = 6;//first five address reserved for special use
         }
         for(String instruction:instructions){
+            if(instruction.contains(";")){
+                instruction=instruction.split(";")[0];
+            }
+            if(instruction.substring(0,4).equals("End:")){
+                instruction=instruction.substring(4);
+            }
+            instruction=instruction.trim();
             String[] tmpArr=instruction.split("\\s+");
-            if(tmpArr[0].equals("LOC")){//set the address if specified
+
+            //set the address if specified
+            if(tmpArr[0].equals("LOC")){
                 parsedInstru.add("             ");
                 address = Integer.parseInt(tmpArr[1]);
             }
-            else if(tmpArr[0].equals("Data")){//if Data, straight to the parsed results
+            //if Data, straight to the parsed results
+            else if(tmpArr[0].equals("Data")){
                 if(tmpArr[1].equals("End")){
-                    tmpArr[1]="01024";
+                    tmpArr[1]="01024"; // Default value for "End"
                 }
                 parsedInstru.add(String.format("%06o",address) + " " + String.format("%06o",Integer.parseInt(tmpArr[1])));
                 address++;
             }
             else {
-            // determine which category this instruction belongs to
+            // determine which category this instruction belongs to and handle accordingly
             if (Miscellaneous.contains(tmpArr[0])) {
-                // Handle Miscellaneous instructions
                 handleMiscellaneousInstruction(tmpArr);
             } else if (LoadnStore.contains(tmpArr[0])) {
-                // Handle Load and Store instructions
                 handleLoadStoreInstruction(tmpArr);
             } else if (Transfer.contains(tmpArr[0])) {
-                // Handle Transfer instructions
                 handleTransferInstruction(tmpArr);
             } else if (ArithLogical.contains(tmpArr[0])) {
-                // Handle Arithmetic and Logical instructions
                 handleArithLogicalInstruction(tmpArr);
             } else if (RegisterOp.contains(tmpArr[0])) {
-                // Handle Register Operation instructions
                 handleRegisterOpInstruction(tmpArr);
             } else if (ShiftnRotate.contains(tmpArr[0])) {
-                // Handle Shift and Rotate instructions
                 handleShiftnRotateInstruction(tmpArr);
             } else if (IO.contains(tmpArr[0])) {
-                // Handle I/O instructions
                 handleIOInstruction(tmpArr);
             } else if (FloatPVec.contains(tmpArr[0])) {
-                // Handle Floating Point and Vector instructions
                 handleFloatPVecInstruction(tmpArr);
             } else {
                 System.out.println("Unknown instruction type: " + tmpArr[0]);
@@ -302,7 +327,8 @@ public class Assembler
             }
         }
     }
-    
+
+    // Method to write to listing file
     public void writeListingFile(String fileName){
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
@@ -314,6 +340,7 @@ public class Assembler
         }
     }
     
+    // Method to write to load file
     public void writeLoadFile(String fileName){
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
@@ -325,6 +352,7 @@ public class Assembler
         }
     }
     
+    // Method to cleanup load file
     public void cleanup(String fileName) {
         // Try-with-resources to ensure that all resources will be closed
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -347,7 +375,7 @@ public class Assembler
 
     
     public void run(){
-        readFile("./test case.txt");
+        readFile("./test1.txt");
         loadDict();
         parse();
         writeListingFile("./ListingFile.txt");
