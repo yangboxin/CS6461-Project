@@ -374,18 +374,23 @@ public class Assembler
     }
 
     
-    public void run(){
-        readFile("./test1.txt");
+    public void run(String inputFile){
+        readFile(inputFile);
         loadDict();
         parse();
         writeListingFile("./ListingFile.txt");
         writeLoadFile("./LoadFile1.txt");
+        instructions.clear();
         parsedInstru.clear();
         cleanup("./LoadFile1.txt");
     }
     
     public static void main(String[] args){
         Assembler myAssembler = new Assembler();
-        myAssembler.run();
+        String inputFile="./test1.txt";
+        if(args.length>0){
+            inputFile=args[0];
+        }
+        myAssembler.run(inputFile);
     }
 }

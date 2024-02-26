@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=panel
+comment1.params=primaryStage
+comment1.target=void\ start(javafx.stage.Stage)
+comment2.params=label\ bitsCount\ ldButFlag
+comment2.target=javafx.scene.layout.HBox\ createRecs(java.lang.String,\ int,\ int)
+comment3.params=label\ bitsCount
+comment3.target=javafx.scene.layout.HBox\ createGPRWithLD(java.lang.String,\ int)
+comment4.params=gprBox
+comment4.target=void\ loadBinaryBitsForGPR(javafx.scene.layout.HBox)
+comment5.params=args
+comment5.target=void\ main(java.lang.String[])
+numComments=6
